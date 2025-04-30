@@ -73,6 +73,15 @@ public class NQueens {
 
     function removeQueen(board, row, col): //change the index to an empty grid.
         board[row][col] = '.'
+
+      Big O Notation
+        O(n^2) - for the board size
+        O(n) - for the row and column checks
+        O(n) - for the diagonal checks
+        O(n) - for the backtracking
+        O(n!) - for the number of solutions
+        O(n^2 + n + n + n + n!)
+        O(n!) - greatest time complexity
     */
 
     public static List<char[][]> solveNQueens(int n) {
