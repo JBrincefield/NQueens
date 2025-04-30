@@ -1,8 +1,22 @@
 package csc250.brincefield.jacob;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        int n = 16;
+        List<char[][]> solutions = solveNQueens(n);
+
+        // Print all solutions
+        for (char[][] solution : solutions) {
+            for (char[] row : solution) {
+                System.out.println(new String(row));
+            }
+            System.out.println();
+        }
+        System.out.println("n = " + n);
+        System.out.println("Total solutions: " + solutions.size());
     }
 
     /*
@@ -74,4 +88,82 @@ public class Main {
     function removeQueen(board, row, col): //change the index to an empty grid.
         board[row][col] = '.'
     */
+
+    public static List<char[][]> solveNQueens(int n) {
+        List<char[][]> solutions = new ArrayList<>();
+        char[][] board = new char[n][n];
+
+        // Initialize the board with empty cells
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                board[i][j] = '.';
+            }
+        }
+
+        solveNQueensHelper(board, 0, solutions);
+        return solutions;
+    }
+
+    private static void solveNQueensHelper(char[][] board, int row, List<char[][]> solutions) {
+        int n = board.length;
+
+        // Base case: If all rows are processed, add the solution
+        if (row == n) {
+            solutions.add(deepCopyBoard(board));
+            return;
+        }
+
+        // Try placing a queen in each column of the current row
+        for (int col = 0; col < n; col++) {
+            if (isValidPlacement(board, row, col)) {
+                placeQueen(board, row, col);
+                solveNQueensHelper(board, row + 1, solutions); // Recurse to the next row
+                removeQueen(board, row, col); // Backtrack
+            }
+        }
+    }
+
+    private static boolean isValidPlacement(char[][] board, int row, int col) {
+        int n = board.length;
+
+        // Check vertical column
+        for (int r = 0; r < row; r++) {
+            if (board[r][col] == 'Q') {
+                return false;
+            }
+        }
+
+        // Check top-left diagonal
+        for (int r = row - 1, c = col - 1; r >= 0 && c >= 0; r--, c--) {
+            if (board[r][c] == 'Q') {
+                return false;
+            }
+        }
+
+        // Check top-right diagonal
+        for (int r = row - 1, c = col + 1; r >= 0 && c < n; r--, c++) {
+            if (board[r][c] == 'Q') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static void placeQueen(char[][] board, int row, int col) {
+        board[row][col] = 'Q';
+    }
+
+    private static void removeQueen(char[][] board, int row, int col) {
+        board[row][col] = '.';
+    }
+
+    private static char[][] deepCopyBoard(char[][] board) {
+        int n = board.length;
+        char[][] copy = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            System.arraycopy(board[i], 0, copy[i], 0, n);
+        }
+        return copy;
+    }
 }
